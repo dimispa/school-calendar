@@ -3,12 +3,12 @@ from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 from streamlit_calendar import calendar
 
-# Ρύθμιση για εμφάνιση σαν εφαρμογή κινητού
+# Ρυθμίσεις για εμφάνιση σαν εφαρμογή
 st.set_page_config(page_title="School Cal", layout="centered")
 
+# Κρύβουμε τα μενού του Streamlit για να μοιάζει με App
 st.markdown("""
     <style>
-    /* Κρύβουμε τα περιττά του Streamlit για να μοιάζει με APK */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -17,36 +17,34 @@ st.markdown("""
 
 st.title("📅 Σχολικό Ημερολόγιο")
 
-# Σύνδεση χωρίς Secrets JSON - Μόνο με το Link
-url = "https://docs.google.com/spreadsheets/d/1ClSPjY3zx1eaDL2deGn1dx_9XYTFxfCQg_zXv8Ny2Cw/edit#gid=0"
+# Το link του αρχείου σου
+URL = "https://docs.google.com/spreadsheets/d/1ClSPjY3zx1eaDL2deGn1dx_9XYTFxfCQg_zXv8Ny2Cw/edit#gid=0"
+
+# Σύνδεση με το Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 try:
-    df = conn.read(spreadsheet=url, ttl=0)
+    # Διάβασμα δεδομένων - TTL=0 για να ανανεώνεται αμέσως
+    df = conn.read(spreadsheet=URL, ttl=0)
     
-    # Εμφάνιση Ημερολογίου προσαρμοσμένου για κινητά
+    # Ρυθμίσεις Ημερολογίου για κινητά
     calendar_options = {
-        "initialView": "listWeek", # Λίστα για να βολεύει στο κινητό
+        "initialView": "listWeek",
         "locale": "el",
         "headerToolbar": {
             "left": "prev,next",
             "center": "title",
             "right": "today"
-        }
+        },
+        "buttonText": {"today": "Σήμερα"}
     }
     
+    # Εμφάνιση του Ημερολογίου
     calendar(events=df.to_dict(orient='records'), options=calendar_options)
     
-    # Κουμπί Νέας Καταχώρησης
-    with st.expander("➕ Προσθήκη Διαγωνίσματος"):
-        with st.form("new_event"):
-            teacher = st.text_input("Καθηγητής")
-            date = st.date_input("Ημερομηνία")
-            type_ev = st.selectbox("Τύπος", ["Διαγώνισμα", "Τεστ"])
-            submit = st.form_submit_button("Αποθήκευση")
-            
-            if submit:
-                # Εδώ θα προσθέσουμε τη λογική αποθήκευσης μόλις δουλέψει η ανάγνωση
-                st.success("Η αποθήκευση ενεργοποιείται...")
+    st.write("---")
+    st.info("💡 Για να το έχεις ως εφαρμογή: Πάτα τις 3 τελείες στον browser και 'Προσθήκη στην αρχική οθόνη'.")
+
 except Exception as e:
-    st.error("Σύνδεση σε εξέλιξη... Παρακαλώ περιμένετε.")
+    st.warning("🔄 Γίνεται σύνδεση με το Google Sheets...")
+    st.info("Βεβαιωθείτε ότι έχετε κάνει το αρχείο 'Δημόσιο με σύνδεσμο' και ως 'Συντάκτη'.")
