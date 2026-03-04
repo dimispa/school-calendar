@@ -18,7 +18,7 @@ st.markdown("""
 st.title("📅 Σχολικό Ημερολόγιο")
 
 # Σύνδεση χωρίς Secrets JSON - Μόνο με το Link
-url = "https://docs.google.com/spreadsheets/d/1ClSPjY3zx1eaDL2deGn1dx_9XYTFxfCQg_zXv8Ny2Cw/edit#gid=0"
+url = "https://docs.google.com/spreadsheets/d/1ENw07twtEbduCWifb4tt0_sQo2iT8SiAoB9QlXnMeY0/edit?usp=sharing"
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 try:
@@ -50,3 +50,4 @@ try:
                 st.success("Η αποθήκευση ενεργοποιείται...")
 except Exception as e:
     st.error("Σύνδεση σε εξέλιξη... Παρακαλώ περιμένετε.")
+
